@@ -29,3 +29,7 @@
 5. Для повторного увімкнення служби для автозапуску: sudo systemctl enable checkApp"
 
 bash <(curl -sL https://raw.githubusercontent.com/ixaker/checker/main/instal-checker.sh)
+
+bash <(wget -qO- https://raw.githubusercontent.com/ixaker/checker/main/instal-checker.sh)
+
+$SUDO apt install -y package_name > /dev/null 2>&1

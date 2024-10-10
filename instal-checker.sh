@@ -42,7 +42,7 @@ if [ ${#MISSING_PACKAGES[@]} -ne 0 ]; then
         echo "          "
         echo "${package} installing..." # Print the name of the package
         
-        $SUDO apt install -y $package
+        $SUDO apt install -y $package > /dev/null 2>&1
     done
 else
     echo "Все необходимые пакеты установлены."
