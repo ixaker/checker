@@ -10,9 +10,9 @@ const interval = process.env.INTERVAL || 10000;
 const source = process.env.SOURCE || 'Unknown Source';
 let message = '';
 let oldMessage = '';
-
+let hasStateChanged;
 let initialMessageId;
-let servicesState = {}
+
 
 const services = [
     { name: 'Monitoring Service', url: 'https://monitoring.qpart.com.ua/' },
@@ -20,22 +20,64 @@ const services = [
     { name: 'Test Qpart client', url: 'https://test.qpart.com.ua' },
 ];
 
+function initialServicesState(services) {
+    const state = {};
+    services.forEach(service => {
+        state[service.name] = true;
+    });
+    return state;
+}
+
+let servicesState = initialServicesState(services);
+
+const updateServicesState = (results) => {
+    oldServicesState = { ...servicesState };
+    results.forEach(result => {
+        servicesState[result.name] = result.available;
+    });
+};
+
 const sendTelegramMessage = async (message) => {
     const url = `https://api.telegram.org/bot${token}/sendMessage`;
-    const response = await axios.post(url, {
-        chat_id: chatId,
-        text: message,
-    });
-    return response.data.result.message_id;
+    try {
+        const response = await axios.post(url, {
+            chat_id: chatId,
+            text: message,
+        });
+        return response.data.result.message_id;
+    } catch (error) {
+        if (error.response && error.response.data.error_code === 429) {
+            const retryAfter = error.response.data.parameters.retry_after;
+            console.log(`Помилка 429: Затримка на ${retryAfter} секунд перед повтором...`);
+            await new Promise(resolve => setTimeout(resolve, retryAfter * 1000));
+            return sendTelegramMessage(message);
+        } else {
+            console.error('Помилка при відправці повідомлення:', error);
+            throw error;
+        }
+    }
 };
 
 const editTelegramMessage = async (message, messageId) => {
     const url = `https://api.telegram.org/bot${token}/editMessageText`;
-    await axios.post(url, {
-        chat_id: chatId,
-        message_id: messageId,
-        text: message,
-    });
+    try {
+        await axios.post(url, {
+            chat_id: chatId,
+            message_id: messageId,
+            text: message,
+        });
+    } catch (error) {
+        if (error.response && error.response.data.error_code === 429) {
+            const retryAfter = error.response.data.parameters.retry_after;
+            console.log(`Помилка 429: Затримка на ${retryAfter} секунд перед повтором...`);
+            await new Promise(resolve => setTimeout(resolve, retryAfter * 1000)); // Затримка
+            // Повторний запит
+            return editTelegramMessage(message, messageId);
+        } else {
+            console.error('Помилка при редагуванні повідомлення:', error);
+            throw error; // Пробросити інші помилки
+        }
+    }
 };
 
 const checkServices = async () => {
@@ -57,21 +99,23 @@ const checkServices = async () => {
     return results;
 };
 
+let oldServicesState = { ...servicesState };
 
+const isServiceChanged = (name) => {
+    return oldServicesState[name] !== servicesState[name];
+};
 const checkResult = async (results) => {
+
     let hasError = false;
     for (const result of results) {
-        if (!result.available) {
-            hasError = true;
-
-            message = `⚠️ Сервіс "${result.name}" не працює.`;
-            if (servicesState[result.name]) {
-                await sendTelegramMessage(message);
-            }
-            servicesState[result.name] = result.available;
+        console.log('перевіряємо сервіс', result.name);
+        if (isServiceChanged(result.name)) {
+            message = result.available ? `✅ Сервіс "${result.name}" відновився.` : `⚠️ Сервіс "${result.name}" не працює. 🔴❗❌`;
+            await sendTelegramMessage(message);
         }
+
     }
-    if (hasError) {
+    if (hasStateChanged) {
         message = createMessage(results);
         initialMessageId = await sendTelegramMessage(message);
     }
@@ -90,7 +134,10 @@ const createMessage = (results) => {
     return message;
 };
 
+
+
 const initialMessage = async () => {
+    console.log('ініціалізуємо перше повідомлення')
     initialMessageId = await sendTelegramMessage(`Чекер на комп'ютері ${source} запущений`);
     console.log('initialMessageId:', initialMessageId);
 
@@ -102,11 +149,15 @@ const initialMessage = async () => {
         await editTelegramMessage(message, initialMessageId);
     }
     setInterval(async () => {
+        console.log('перевіряємо сервіси новий цикл')
         const results = await checkServices();
+        updateServicesState(results);
+        hasStateChanged = JSON.stringify(oldServicesState) !== JSON.stringify(servicesState);
         await checkResult(results);
         oldMessage = message;
         message = createMessage(results);
         if (message !== oldMessage) {
+            console.log('оновлюємо повідомлення періодичного сканування')
             await editTelegramMessage(message, initialMessageId);
         }
         console.log(message)
