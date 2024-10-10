@@ -28,8 +28,11 @@
 4. Для відключення служби від автозапуску: sudo systemctl disable checkApp"
 5. Для повторного увімкнення служби для автозапуску: sudo systemctl enable checkApp"
 
-bash <(curl -sL https://raw.githubusercontent.com/ixaker/checker/main/instal-checker.sh)
+bash <(curl -sL https://raw.githubusercontent.com/ixaker/checker/refs/heads/main/instal-checker.sh)
 
-bash <(wget -qO- https://raw.githubusercontent.com/ixaker/checker/main/instal-checker.sh)
+bash <(wget -qO- https://raw.githubusercontent.com/ixaker/checker/refs/heads/main/instal-checker.sh)
 
 $SUDO apt install -y package_name > /dev/null 2>&1
+
+https://raw.githubusercontent.com/ixaker/checker/main/instal-checker.sh
+https://raw.githubusercontent.com/ixaker/checker/refs/heads/main/instal-checker.sh
