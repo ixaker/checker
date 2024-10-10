@@ -1,6 +1,6 @@
 Для установки на лінукс запустіть
 
-bash <(wget -qO- https://raw.githubusercontent.com/ixaker/checker/main/instal.sh) -i
+bash <(wget -qO- https://raw.githubusercontent.com/ixaker/checker/main/install.sh) -i
 
 Для оновлення запустіть
 
