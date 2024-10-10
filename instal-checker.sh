@@ -36,6 +36,7 @@ install_package_if_missing() {
 # Установка curl и git, если они отсутствуют
 install_package_if_missing curl
 install_package_if_missing git
+install_package_if_missing unzip
 
 # installs fnm (Fast Node Manager)
 curl -fsSL https://fnm.vercel.app/install | bash
