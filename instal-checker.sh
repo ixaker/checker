@@ -35,8 +35,13 @@ if [ ${#MISSING_PACKAGES[@]} -ne 0 ]; then
     echo "Попытка установить отсутствующие пакеты..."
     
     $SUDO apt update
+
+    echo "Install missing packages..."
     
     for package in "${MISSING_PACKAGES[@]}"; do
+        echo "          "
+        echo "${package} installing..." # Print the name of the package
+        
         $SUDO apt install -y $package
     done
 else
