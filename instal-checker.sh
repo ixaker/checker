@@ -24,7 +24,7 @@ check_command() {
 
 # Проверка наличия необходимых пакетов
 MISSING_PACKAGES=()
-check_command node
+check_command nodejs
 check_command npm
 check_command curl
 check_command git
