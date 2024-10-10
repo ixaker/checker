@@ -11,41 +11,38 @@ else
     echo "Скрипт запущен не под root. Будет использоваться sudo."
 fi
 
-# Функция для проверки наличия пакета
-check_command() {
-    command_name=$1
-    if ! command -v $command_name &> /dev/null; then
-        echo "$command_name не найден! Пожалуйста, установите его."
-        MISSING_PACKAGES+=($command_name)
-    else
-        echo "$command_name установлен."
-    fi
-}
+echo "Updating apt..."
+$SUDO apt update -y > /dev/null 2>&1
 
-# Проверка наличия необходимых пакетов
-MISSING_PACKAGES=()
-check_command nodejs
-check_command npm
-check_command curl
-check_command git
-
-# Установка недостающих пакетов
-if [ ${#MISSING_PACKAGES[@]} -ne 0 ]; then
-    echo "Некоторые пакеты отсутствуют: ${MISSING_PACKAGES[@]}"
-    echo "Попытка установить отсутствующие пакеты..."
-    
-    $SUDO apt update
-
-    echo "Install missing packages..."
-    
-    for package in "${MISSING_PACKAGES[@]}"; do
-        echo "          "
-        echo "${package} installing..." # Print the name of the package
-        
-        $SUDO apt install -y $package > /dev/null 2>&1
-    done
+# Проверка наличия Git
+if command -v git &> /dev/null; then
+    echo "Git уже установлен."
 else
-    echo "Все необходимые пакеты установлены."
+    echo "Git не установлен. Начинаем установку..."
+
+    # Обновление списка пакетов и установка Git
+    $SUDO apt install -y git > /dev/null 2>&1
+
+    # Проверка успешной установки
+    if command -v git &> /dev/null; then
+        echo "Git успешно установлен."
+        git --version
+    else
+        echo "Не удалось установить Git. Пожалуйста, установите его вручную."
+    fi
+fi
+
+# installs fnm (Fast Node Manager)
+wget -qO- https://fnm.vercel.app/install | bash
+# activate fnm
+source ~/.bashrc
+# download and install Node.js
+fnm use --install-if-missing 18
+
+if command -v node &> /dev/null; then
+    echo "Node.js встановлено. Версія: $(node -v)"
+else
+    echo "Node.js не встановлено."
 fi
 
 echo "Скрипт завершен."
