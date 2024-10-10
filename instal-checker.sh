@@ -14,23 +14,29 @@ fi
 echo "Updating apt..."
 $SUDO apt update -y > /dev/null 2>&1
 
-# Проверка наличия Git
-if command -v git &> /dev/null; then
-    echo "Git уже установлен."
-else
-    echo "Git не установлен. Начинаем установку..."
-
-    # Обновление списка пакетов и установка Git
-    $SUDO apt install -y git > /dev/null 2>&1
-
-    # Проверка успешной установки
-    if command -v git &> /dev/null; then
-        echo "Git успешно установлен."
-        git --version
+# Функция для проверки наличия пакета и его установки
+install_package_if_missing() {
+    package_name=$1
+    if command -v $package_name &> /dev/null; then
+        echo "$package_name уже установлен."
     else
-        echo "Не удалось установить Git. Пожалуйста, установите его вручную."
+        echo "$package_name не установлен. Начинаем установку..."
+        $SUDO apt update -y > /dev/null 2>&1
+        $SUDO apt install -y $package_name > /dev/null 2>&1
+
+        # Проверка успешной установки
+        if command -v $package_name &> /dev/null; then
+            echo "$package_name успешно установлен."
+            $package_name --version
+        else
+            echo "Не удалось установить $package_name. Пожалуйста, установите его вручную."
+        fi
     fi
-fi
+}
+
+# Установка curl и git, если они отсутствуют
+install_package_if_missing curl
+install_package_if_missing git
 
 # installs fnm (Fast Node Manager)
 wget -qO- https://fnm.vercel.app/install | bash
