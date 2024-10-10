@@ -27,7 +27,6 @@ install_package_if_missing() {
         # Проверка успешной установки
         if command -v $package_name &> /dev/null; then
             echo "$package_name успешно установлен."
-            $package_name --version
         else
             echo "Не удалось установить $package_name. Пожалуйста, установите его вручную."
         fi
@@ -49,6 +48,19 @@ if command -v node &> /dev/null; then
     echo "Node.js встановлено. Версія: $(node -v)"
 else
     echo "Node.js не встановлено."
+fi
+
+
+# Клонування репозиторію
+REPO_URL="https://github.com/ixaker/checker.git"
+TARGET_DIR="$HOME/Projects/checker"
+
+if [ ! -d "$TARGET_DIR" ]; then
+    echo "Клоную репозиторій у $TARGET_DIR..."
+    git clone $REPO_URL $TARGET_DIR
+    echo "Репозиторій успішно клонувався."
+else
+    echo "Каталог $TARGET_DIR вже існує. Будь ласка, видаліть його, якщо хочете клонувати знову."
 fi
 
 echo "Скрипт завершен."
