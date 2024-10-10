@@ -1,0 +1,31 @@
+Способ 1. Налаштування служби вручну
+
+Скопіюйте файл служби checkApp.service до директорії /etc/systemd/system/.
+
+Виконайте команди:
+
+    sudo systemctl daemon-reload
+
+    sudo systemctl enable checkApp
+
+    sudo systemctl start checkApp
+
+Спосіб 2. Налаштування служби за допомогою скрипта setupСheckApp.sh
+
+- зробіть скрипт виконуваним
+
+  chmod +x setupСheckApp.sh
+
+- запустіть скрипт
+
+  ./setupСheckApp.sh
+
+  Команди для роботи зі службою:
+
+1. Для перевірки статусу служби: sudo systemctl status checkApp"
+2. Для зупинки служби: sudo systemctl stop checkApp"
+3. Для перезапуску служби: sudo systemctl restart checkApp"
+4. Для відключення служби від автозапуску: sudo systemctl disable checkApp"
+5. Для повторного увімкнення служби для автозапуску: sudo systemctl enable checkApp"
+
+bash <(curl -sL https://raw.githubusercontent.com/ixaker/checker/main/instal-checker.sh)
