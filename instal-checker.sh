@@ -37,6 +37,7 @@ install_package_if_missing() {
 install_package_if_missing curl
 install_package_if_missing git
 install_package_if_missing nodejs
+install_package_if_missing npm
 
 # Клонування репозиторію
 REPO_URL="https://github.com/ixaker/checker.git"
