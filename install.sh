@@ -20,10 +20,12 @@ else
     echo "Скрипт запущен не под root. Будет использоваться sudo."
 fi
 
+install(){
+
 echo "Updating apt..."
 $SUDO apt update -y > /dev/null 2>&1
 
-$SUDO apt install -y nodejs npm git
+$SUDO apt install -y nodejs npm git > /dev/null 2>&1
 
 # Клонування репозиторію
 if [ -d "$TARGET_DIR" ]; then
@@ -60,5 +62,31 @@ $SUDO systemctl enable $SERVICE_NAME
 $SUDO systemctl start $SERVICE_NAME
 
 echo "Служба $SERVICE_NAME успішно налаштована та запущена."
+}
 
-echo "Скрипт завершен."
+update(){
+    # Оновлення репозиторію
+    echo "Виконую git pull в $TARGET_DIR..."
+    git -C "$TARGET_DIR" pull origin main
+
+    # Встановлення нових залежностей
+    echo "Виконую npm install в $TARGET_DIR..."
+    npm --prefix "$TARGET_DIR" install
+
+    # Перезапуск служби
+    echo "Перезапускаю службу $SERVICE_NAME..."
+    $SUDO systemctl restart "$SERVICE_NAME"
+
+    echo "Скрипт завершено."
+}
+
+if [ "$1" == "-i" ]; then
+    install
+elif [ "$1" == "-u" ]; then
+    update
+else
+    echo "Використання: $0 -i (для установки) або $0 -u (для оновлення)"
+    exit 1
+fi
+
+echo "Скрипт завершено."
