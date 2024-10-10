@@ -39,7 +39,7 @@ install_package_if_missing curl
 install_package_if_missing git
 
 # installs fnm (Fast Node Manager)
-wget -qO- https://fnm.vercel.app/install | bash
+curl -fsSL https://fnm.vercel.app/install | bash
 # activate fnm
 source ~/.bashrc
 # download and install Node.js
