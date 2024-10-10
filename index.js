@@ -6,7 +6,7 @@ const port = 3000;
 
 const token = '7898080039:AAG2H-NisHJFQt2eLrNR6s0vwCo0pDlWj44';
 const chatId = '-1002437955649';
-const interval = process.env.INTERVAL || 6000;
+const interval = process.env.INTERVAL || 10000;
 const source = process.env.SOURCE || 'Unknown Source';
 
 
