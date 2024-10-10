@@ -42,12 +42,17 @@ install_package_if_missing nodejs
 REPO_URL="https://github.com/ixaker/checker.git"
 TARGET_DIR="$HOME/Projects/checker"
 
-if [ ! -d "$TARGET_DIR" ]; then
-    echo "Клоную репозиторій у $TARGET_DIR..."
-    git clone $REPO_URL $TARGET_DIR
-    echo "Репозиторій успішно клонувався."
-else
-    echo "Каталог $TARGET_DIR вже існує. Будь ласка, видаліть його, якщо хочете клонувати знову."
+if [ -d "$TARGET_DIR" ]; then
+    echo "Каталог $TARGET_DIR вже існує. Очищую його..."
+    rm -rf "$TARGET_DIR"  # Видаляємо каталог і весь його вміст
 fi
+
+echo "Клоную репозиторій у $TARGET_DIR..."
+git clone $REPO_URL $TARGET_DIR
+echo "Репозиторій успішно клонувався."
+
+cd $TARGET_DIR
+npm install -y
+
 
 echo "Скрипт завершен."
