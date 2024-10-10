@@ -36,21 +36,7 @@ install_package_if_missing() {
 # Установка curl и git, если они отсутствуют
 install_package_if_missing curl
 install_package_if_missing git
-install_package_if_missing unzip
-
-# installs fnm (Fast Node Manager)
-curl -fsSL https://fnm.vercel.app/install | bash
-# activate fnm
-source ~/.bashrc
-# download and install Node.js
-fnm use --install-if-missing 18
-
-if command -v node &> /dev/null; then
-    echo "Node.js встановлено. Версія: $(node -v)"
-else
-    echo "Node.js не встановлено."
-fi
-
+install_package_if_missing nodejs
 
 # Клонування репозиторію
 REPO_URL="https://github.com/ixaker/checker.git"
