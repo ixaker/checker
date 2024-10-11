@@ -123,7 +123,7 @@ const checkResult = async (results) => {
 
 const createMessage = (results) => {
     const currentTime = new Date().toLocaleString('uk-UA', { hour12: false });
-    let message = `Остання перевірка від ${source} ${currentTime}\n`;
+    let message = `${source}. Час останньої перевірки ${currentTime}\n`;
 
     results.forEach(result => {
         const status = result.available ? 'працює' : 'не працює';
