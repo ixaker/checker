@@ -1,0 +1,17 @@
+{
+  "interval": 4000,
+  "services": [
+    {
+      "name": "Monitoring web client",
+      "url": "https://monitoring.qpart.com.ua/"
+    },
+    {
+      "name": "Qpart production client",
+      "url": "https://wss.qpart.com.ua"
+    },
+    {
+      "name": "Test Qpart client",
+      "url": "https://test.qpart.com.ua"
+    }
+  ]
+}
