@@ -49,7 +49,7 @@ app.post('/setconfig', async (req, res) => {
     }
 
     try {
-        await saveConfig(newConfig); // Виклик функції для збереження конфігурації
+        await saveConfig(newConfig);
 
         config = newConfig;
         interval = config.interval || 10000;
@@ -62,11 +62,10 @@ app.post('/setconfig', async (req, res) => {
         serviceCheckInterval = setInterval(checkAndEditMessage, interval);
 
         console.log('Configuration successfully updated and applied.');
+        res.status(200).json({ message: 'Configuration successfully updated and applied.' });
 
         const newConfigMessage = `Отримано нову конфігурацію:\n${JSON.stringify(newConfig, null, 2)}`;
-        await sendTelegramMessage(newConfigMessage);
-
-        return res.status(200).json({ message: 'Configuration successfully updated and applied.' });
+        sendTelegramMessage(newConfigMessage);
     } catch (err) {
         console.error('Error writing to config.json file:', err);
         return res.status(500).json({ message: 'An error occurred while saving the configuration.' });

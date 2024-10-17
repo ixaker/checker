@@ -23,6 +23,7 @@ https://raw.githubusercontent.com/ixaker/checker/refs/heads/main/instal-checker.
 
 Зупинити контейнер
 docker stop checker
+
 Видалити контейнер
 docker rm checker
 

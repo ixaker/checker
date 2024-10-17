@@ -2,7 +2,7 @@
   "interval": 4000,
   "services": [
     {
-      "name": "Monitoring web client",
+      "name": "Monitoring3 web client",
       "url": "https://monitoring.qpart.com.ua/"
     },
     {
